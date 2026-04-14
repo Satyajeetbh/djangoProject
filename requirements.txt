@@ -1,0 +1,6 @@
+Django
+ djangorestframework
+ celery
+ psycopg2
+ pytest
+ pytest-django
