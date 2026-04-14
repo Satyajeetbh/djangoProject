@@ -14,7 +14,7 @@ This project is a Django-based web application designed to demonstrate best prac
 ## Tech Stack
 - **Backend:** Django, Django REST Framework
 - **Frontend:** HTML, CSS, Bootstrap
-- **Database:** PostgreSQL
+- **Database:** DBSqLite
 - **Containerization:** Docker
 - **Testing:** Pytest
 - **Version Control:** Git
@@ -23,7 +23,6 @@ This project is a Django-based web application designed to demonstrate best prac
 ### Prerequisites
 - Python 3.8+
 - pip (Python package installer)
-- PostgreSQL
 - Git
 - Docker (optional)
 
