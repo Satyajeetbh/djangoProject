@@ -25,3 +25,32 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.sqlite3
+*.db
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+staticfiles/
+media/
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
