@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q, Avg, Count
 from .models import Recipe, MealPlan, MealPlanItem, ShoppingList, ShoppingListItem, FavoriteRecipe, DietaryPreference, RecipeReview
-from .forms import RegisterForm, LoginForm, RecipeForm, MealPlanForm, ShoppingListForm, ShoppingListItemForm
+from .forms import RegisterForm, LoginForm, RecipeForm, MealPlanForm, ShoppingListForm, ShoppingListItemForm, AIRecipeGeneratorForm, RecipeReviewForm, DietaryPreferenceForm
+from .ai_services import generate_recipe_from_name
 from datetime import datetime
 import urllib.parse
 
@@ -184,21 +185,22 @@ def add_review(request, recipe_id):
     if not recipe.is_shared and recipe.user != request.user:
         return redirect('home')
     
-    if request.method == 'POST':
-        rating = request.POST.get('rating')
-        comment = request.POST.get('comment', '')
-        
-        review, created = RecipeReview.objects.update_or_create(
-            recipe=recipe,
-            reviewer=request.user,
-            defaults={'rating': rating, 'comment': comment}
-        )
-        return redirect('view_recipe', pk=recipe_id)
-    
     existing_review = RecipeReview.objects.filter(recipe=recipe, reviewer=request.user).first()
+    
+    if request.method == 'POST':
+        form = RecipeReviewForm(request.POST, instance=existing_review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.recipe = recipe
+            review.reviewer = request.user
+            review.save()
+            return redirect('view_recipe', pk=recipe_id)
+    else:
+        form = RecipeReviewForm(instance=existing_review)
+        
     context = {
         'recipe': recipe,
-        'existing_review': existing_review,
+        'form': form,
     }
     return render(request, 'recipes/add_review.html', context)
 
@@ -208,17 +210,14 @@ def manage_dietary_preferences(request):
     dietary_pref, created = DietaryPreference.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
-        dietary_pref.vegan = request.POST.get('vegan') == 'on'
-        dietary_pref.vegetarian = request.POST.get('vegetarian') == 'on'
-        dietary_pref.gluten_free = request.POST.get('gluten_free') == 'on'
-        dietary_pref.nut_allergy = request.POST.get('nut_allergy') == 'on'
-        dietary_pref.dairy_free = request.POST.get('dairy_free') == 'on'
-        dietary_pref.low_carb = request.POST.get('low_carb') == 'on'
-        dietary_pref.custom_restrictions = request.POST.get('custom_restrictions', '')
-        dietary_pref.save()
-        return redirect('my_recipes')
-    
-    context = {'dietary_preference': dietary_pref}
+        form = DietaryPreferenceForm(request.POST, instance=dietary_pref)
+        if form.is_valid():
+            form.save()
+            return redirect('my_recipes')
+    else:
+        form = DietaryPreferenceForm(instance=dietary_pref)
+        
+    context = {'form': form}
     return render(request, 'recipes/manage_dietary_preferences.html', context)
 
 
@@ -483,3 +482,37 @@ def share_recipe(request, pk):
         'encoded_text': urllib.parse.quote(share_text),
     }
     return render(request, 'recipes/share_recipe.html', context)
+
+
+@login_required
+def generate_recipe_ai(request):
+    if request.method == 'POST':
+        form = AIRecipeGeneratorForm(request.POST)
+        if form.is_valid():
+            recipe_name = form.cleaned_data['recipe_name']
+            
+            ai_data = generate_recipe_from_name(recipe_name)
+            
+            if ai_data:
+                # Create the recipe with the generated data
+                recipe = Recipe(
+                    user=request.user,
+                    title=ai_data.get('title', recipe_name),
+                    description=ai_data.get('description', ''),
+                    ingredients=ai_data.get('ingredients', ''),
+                    instructions=ai_data.get('instructions', ''),
+                    calories=ai_data.get('calories', 0),
+                    protein=ai_data.get('protein', 0.0),
+                    fat=ai_data.get('fat', 0.0),
+                    carbs=ai_data.get('carbs', 0.0),
+                    dietary_type=ai_data.get('dietary_type', 'none'),
+                    is_shared=False
+                )
+                recipe.save()
+                return redirect('edit_recipe', pk=recipe.id)
+            else:
+                form.add_error(None, "Failed to generate recipe. Please try again or check your API key.")
+    else:
+        form = AIRecipeGeneratorForm()
+        
+    return render(request, 'recipes/generate_recipe_ai.html', {'form': form})

@@ -8,7 +8,12 @@
         <h1>{% if is_favorites %}❤️ My Favorite Recipes{% else %}My Recipes{% endif %}</h1>
         {% if not is_favorites %}<p style="color: var(--gray-600); margin-top: 0.5rem;">Manage your personal recipe collection</p>{% endif %}
     </div>
-    {% if not is_favorites %}<a href="{% url 'add_recipe' %}" class="btn btn-primary">+ Add New Recipe</a>{% endif %}
+    {% if not is_favorites %}
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'generate_recipe_ai' %}" class="btn btn-secondary" style="background-color: var(--accent-color); color: white; border: none;">✨ Generate with AI</a>
+        <a href="{% url 'add_recipe' %}" class="btn btn-primary">+ Add New Recipe</a>
+    </div>
+    {% endif %}
 </div>
 
 {% if not is_favorites %}

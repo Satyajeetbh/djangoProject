@@ -15,6 +15,7 @@ urlpatterns = [
     # Recipes
     path('recipes/', views.my_recipes, name='my_recipes'),
     path('recipes/add/', views.add_recipe, name='add_recipe'),
+    path('recipes/generate-ai/', views.generate_recipe_ai, name='generate_recipe_ai'),
     path('recipes/<int:pk>/', views.view_recipe, name='view_recipe'),
     path('recipes/<int:pk>/edit/', views.edit_recipe, name='edit_recipe'),
     path('recipes/<int:pk>/delete/', views.delete_recipe, name='delete_recipe'),

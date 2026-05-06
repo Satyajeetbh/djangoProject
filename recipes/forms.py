@@ -68,8 +68,8 @@ class RecipeReviewForm(forms.ModelForm):
         model = RecipeReview
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.NumberInput(attrs={'class': 'form-input', 'type': 'range', 'min': '1', 'max': '5'}),
-            'comment': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 3, 'placeholder': 'Share your thoughts...'}),
+            'rating': forms.NumberInput(attrs={'class': 'form-input w-full', 'type': 'range', 'min': '1', 'max': '5', 'oninput': 'updateRating(this.value)'}),
+            'comment': forms.Textarea(attrs={'class': 'form-textarea w-full', 'rows': 5, 'placeholder': 'Share your thoughts about this recipe...'}),
         }
 
 
@@ -84,5 +84,16 @@ class DietaryPreferenceForm(forms.ModelForm):
             'nut_allergy': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
             'dairy_free': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
             'low_carb': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
-            'custom_restrictions': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 3, 'placeholder': 'Any custom dietary restrictions...'}),
+            'custom_restrictions': forms.Textarea(attrs={'class': 'form-textarea w-full', 'rows': 4, 'placeholder': 'Any other dietary restrictions...'}),
         }
+
+class AIRecipeGeneratorForm(forms.Form):
+    recipe_name = forms.CharField(
+        max_length=255, 
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input', 
+            'placeholder': 'e.g. Vegan Chocolate Cake',
+            'autofocus': True
+        })
+    )

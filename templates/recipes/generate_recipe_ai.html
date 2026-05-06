@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Recipe Generator - RecipeApp{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>✨ AI Recipe Generator</h1>
+    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Enter a recipe name or a brief description, and our AI chef will generate a complete recipe for you, including ingredients, instructions, and nutritional facts!</p>
+    
+    <form method="post" class="recipe-form" id="ai-generator-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="generate-btn">
+                <span id="btn-text">Generate Recipe</span>
+            </button>
+            <a href="{% url 'my_recipes' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+        
+        <div id="loading-indicator" style="display: none; text-align: center; margin-top: 1.5rem;">
+            <p><strong>Thinking...</strong> This might take a few seconds.</p>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('ai-generator-form').addEventListener('submit', function() {
+        const btn = document.getElementById('generate-btn');
+        const text = document.getElementById('btn-text');
+        const loader = document.getElementById('loading-indicator');
+        
+        text.innerText = "Generating...";
+        btn.disabled = true;
+        btn.style.opacity = "0.7";
+        loader.style.display = "block";
+    });
+</script>
+{% endblock %}

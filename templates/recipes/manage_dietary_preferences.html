@@ -11,38 +11,38 @@
         
         <div class="space-y-4">
             <div class="flex items-center">
-                <input type="checkbox" name="vegan" id="vegan" {% if dietary_preference.vegan %}checked{% endif %} class="form-checkbox">
-                <label for="vegan" class="ml-3">Vegan</label>
+                {{ form.vegan }}
+                <label for="{{ form.vegan.id_for_label }}" class="ml-3">Vegan</label>
             </div>
             
             <div class="flex items-center">
-                <input type="checkbox" name="vegetarian" id="vegetarian" {% if dietary_preference.vegetarian %}checked{% endif %} class="form-checkbox">
-                <label for="vegetarian" class="ml-3">Vegetarian</label>
+                {{ form.vegetarian }}
+                <label for="{{ form.vegetarian.id_for_label }}" class="ml-3">Vegetarian</label>
             </div>
             
             <div class="flex items-center">
-                <input type="checkbox" name="gluten_free" id="gluten_free" {% if dietary_preference.gluten_free %}checked{% endif %} class="form-checkbox">
-                <label for="gluten_free" class="ml-3">Non-vegetarian</label>
+                {{ form.gluten_free }}
+                <label for="{{ form.gluten_free.id_for_label }}" class="ml-3">Gluten-Free</label>
             </div>
             
             <div class="flex items-center">
-                <input type="checkbox" name="nut_allergy" id="nut_allergy" {% if dietary_preference.nut_allergy %}checked{% endif %} class="form-checkbox">
-                <label for="nut_allergy" class="ml-3">Nut Allergy</label>
+                {{ form.nut_allergy }}
+                <label for="{{ form.nut_allergy.id_for_label }}" class="ml-3">Nut Allergy</label>
             </div>
             
             <div class="flex items-center">
-                <input type="checkbox" name="dairy_free" id="dairy_free" {% if dietary_preference.dairy_free %}checked{% endif %} class="form-checkbox">
-                <label for="dairy_free" class="ml-3">Dairy-Free</label>
+                {{ form.dairy_free }}
+                <label for="{{ form.dairy_free.id_for_label }}" class="ml-3">Dairy-Free</label>
             </div>
             
             <div class="flex items-center">
-                <input type="checkbox" name="low_carb" id="low_carb" {% if dietary_preference.low_carb %}checked{% endif %} class="form-checkbox">
-                <label for="low_carb" class="ml-3">Low-Carb</label>
+                {{ form.low_carb }}
+                <label for="{{ form.low_carb.id_for_label }}" class="ml-3">Low-Carb</label>
             </div>
             
             <div>
-                <label for="custom_restrictions" class="block text-gray-700 font-medium mb-2">Custom Restrictions</label>
-                <textarea name="custom_restrictions" id="custom_restrictions" rows="4" class="form-textarea w-full" placeholder="Any other dietary restrictions...">{{ dietary_preference.custom_restrictions }}</textarea>
+                <label for="{{ form.custom_restrictions.id_for_label }}" class="block text-gray-700 font-medium mb-2">Custom Restrictions</label>
+                {{ form.custom_restrictions }}
             </div>
         </div>
         
